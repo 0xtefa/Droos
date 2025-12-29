@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\LectureController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,4 +18,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
 
     Route::get('/courses', [CourseController::class, 'index']);
     Route::post('/courses', [CourseController::class, 'store']);
+
+    Route::get('/courses/{course}/lectures', [LectureController::class, 'index']);
+    Route::post('/courses/{course}/lectures', [LectureController::class, 'store']);
 });
