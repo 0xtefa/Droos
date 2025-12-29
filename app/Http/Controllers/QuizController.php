@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 
 class QuizController extends Controller
 {
+    public function index(Course $course): JsonResponse
+    {
+        $quizzes = $course->quizzes()->withCount('questions')->latest()->get();
+
+        return response()->json($quizzes);
+    }
+
     public function store(Request $request, Course $course): JsonResponse
     {
         $this->authorize('update', $course);

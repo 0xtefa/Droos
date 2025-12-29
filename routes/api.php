@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
 
     Route::post('/lectures/{lecture}/attend', [AttendanceController::class, 'store']);
 
+    Route::get('/courses/{course}/quizzes', [QuizController::class, 'index']);
     Route::post('/courses/{course}/quizzes', [QuizController::class, 'store']);
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show']);
     Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store']);

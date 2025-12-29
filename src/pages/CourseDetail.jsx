@@ -6,6 +6,7 @@ export default function CourseDetail() {
   const { courseId } = useParams();
   const [course, setCourse] = useState(null);
   const [lectures, setLectures] = useState([]);
+  const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,9 +18,10 @@ export default function CourseDetail() {
     setLoading(true);
     (async () => {
       try {
-        const [{ data: courseList }, { data: lectureList }] = await Promise.all([
+        const [{ data: courseList }, { data: lectureList }, { data: quizList }] = await Promise.all([
           api.get('/courses'),
           api.get(`/courses/${courseId}/lectures`),
+          api.get(`/courses/${courseId}/quizzes`),
         ]);
         if (!mounted) return;
         const foundCourse = courseList.find((c) => String(c.id) === String(courseId)) ?? null;
@@ -28,6 +30,7 @@ export default function CourseDetail() {
           setError('Course not found');
         }
         setLectures(lectureList);
+        setQuizzes(quizList);
       } catch (e) {
         if (mounted) setError('Failed to load course');
       } finally {
@@ -93,6 +96,36 @@ export default function CourseDetail() {
                       </a>
                     )}
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-white">Quizzes</h3>
+            {quizzes.length === 0 && (
+              <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-300">
+                No quizzes yet.
+              </div>
+            )}
+            <div className="space-y-3">
+              {quizzes.map((quiz) => (
+                <div
+                  key={quiz.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/50 p-4 shadow-sm shadow-slate-950/40"
+                >
+                  <div>
+                    <div className="text-sm uppercase tracking-wide text-slate-400">Quiz</div>
+                    <div className="text-lg font-semibold text-white">{quiz.title}</div>
+                    <div className="text-sm text-slate-300">{quiz.description || 'No description'}</div>
+                    <div className="text-xs text-slate-400">Questions: {quiz.questions_count ?? 0}</div>
+                  </div>
+                  <Link
+                    to={`/quizzes/${quiz.id}`}
+                    className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+                  >
+                    Take quiz
+                  </Link>
                 </div>
               ))}
             </div>
