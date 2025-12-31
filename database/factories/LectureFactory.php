@@ -19,6 +19,7 @@ class LectureFactory extends Factory
             'title' => $this->faker->sentence(4),
             'description' => $this->faker->optional()->paragraph(),
             'position' => $this->faker->numberBetween(0, 10),
+            'video_url' => $this->faker->optional()->url(),
             'audio_url' => $this->faker->optional()->url(),
         ];
     }

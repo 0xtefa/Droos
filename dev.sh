@@ -4,7 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT_DIR"
 
-APP_HOST="${APP_HOST:-127.0.0.1}"
+# Bind backend to all interfaces by default so LAN devices can reach it.
+APP_HOST="${APP_HOST:-0.0.0.0}"
 APP_PORT="${APP_PORT:-8000}"
 VITE_PORT="${VITE_PORT:-5173}"
 

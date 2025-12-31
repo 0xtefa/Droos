@@ -3,10 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LectureController;
+use App\Http\Controllers\LectureSummaryController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\ProgressController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,12 +27,16 @@ Route::middleware('auth:sanctum')->group(function (): void {
 
     Route::get('/courses/{course}/lectures', [LectureController::class, 'index']);
     Route::post('/courses/{course}/lectures', [LectureController::class, 'store']);
+    Route::post('/lectures/{lecture}/complete', [ProgressController::class, 'completeLecture']);
+    Route::get('/courses/{course}/progress', [ProgressController::class, 'courseProgress']);
+    Route::get('/lectures/{lecture}/summary', [LectureSummaryController::class, 'show']);
 
     Route::post('/lectures/{lecture}/attend', [AttendanceController::class, 'store']);
 
     Route::get('/courses/{course}/quizzes', [QuizController::class, 'index']);
     Route::post('/courses/{course}/quizzes', [QuizController::class, 'store']);
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show']);
+    Route::get('/lectures/{lecture}/quiz', [QuizController::class, 'showByLecture']);
     Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store']);
     Route::post('/quizzes/{quiz}/submit', [SubmissionController::class, 'store']);
 });

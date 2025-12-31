@@ -14,6 +14,13 @@ class SubmissionController extends Controller
     {
         $this->authorize('create', Submission::class);
 
+        $lecture = $quiz->lecture;
+        if ($lecture && ! $lecture->completions()->where('user_id', $request->user()->id)->exists()) {
+            return response()->json([
+                'message' => 'يجب إكمال المحاضرة قبل أداء الاختبار.',
+            ], 403);
+        }
+
         if (Submission::where('quiz_id', $quiz->id)->where('user_id', $request->user()->id)->exists()) {
             return response()->json([
                 'message' => 'Quiz already submitted.',

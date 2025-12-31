@@ -26,7 +26,14 @@ class QuizApiTest extends TestCase
             'instructor_id' => $instructor->id,
         ]);
 
-        $quiz = $course->quizzes()->create([
+        $lecture = $course->lectures()->create([
+            'title' => 'Lecture 1',
+            'description' => 'Intro',
+            'position' => 1,
+        ]);
+
+        $quiz = $lecture->quiz()->create([
+            'course_id' => $course->id,
             'title' => 'Quiz 1',
         ]);
 
@@ -89,7 +96,15 @@ class QuizApiTest extends TestCase
     {
         $student = User::factory()->create(['role' => User::ROLE_STUDENT]);
         $course = Course::factory()->create();
-        $quiz = Quiz::factory()->create(['course_id' => $course->id]);
+        $lecture = $course->lectures()->create([
+            'title' => 'Lecture',
+            'description' => 'Test',
+            'position' => 1,
+        ]);
+        $quiz = $lecture->quiz()->create([
+            'course_id' => $course->id,
+            'title' => 'Quiz',
+        ]);
         $question = Question::factory()->create(['quiz_id' => $quiz->id, 'points' => 1]);
         $answer = Answer::factory()->create(['question_id' => $question->id, 'is_correct' => true]);
 
@@ -116,7 +131,15 @@ class QuizApiTest extends TestCase
     {
         $instructor = User::factory()->create(['role' => User::ROLE_INSTRUCTOR]);
         $course = Course::factory()->create(['instructor_id' => $instructor->id]);
-        $quiz = Quiz::factory()->create(['course_id' => $course->id]);
+        $lecture = $course->lectures()->create([
+            'title' => 'Lecture',
+            'description' => 'Test',
+            'position' => 1,
+        ]);
+        $quiz = $lecture->quiz()->create([
+            'course_id' => $course->id,
+            'title' => 'Quiz',
+        ]);
         $question = Question::factory()->create(['quiz_id' => $quiz->id, 'points' => 1]);
         $answer = Answer::factory()->create(['question_id' => $question->id, 'is_correct' => true]);
 

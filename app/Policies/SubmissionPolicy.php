@@ -24,7 +24,8 @@ class SubmissionPolicy
 
     public function create(User $user): bool
     {
-        return $user->role === User::ROLE_STUDENT;
+        // Allow any authenticated user to submit a quiz (student or instructor).
+        return true;
     }
 
     public function delete(User $user, Submission $submission): bool

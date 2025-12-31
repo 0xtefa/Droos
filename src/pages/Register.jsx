@@ -45,49 +45,49 @@ export default function Register() {
   };
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-6 px-4">
+    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-6 px-4 py-8">
       <div>
-        <div className="text-sm font-semibold uppercase tracking-wide text-indigo-200">Join Droos</div>
-        <h1 className="text-3xl font-bold text-white">Create your account</h1>
-        <p className="text-sm text-slate-300">Pick your role to start building or attending courses.</p>
+        <div className="text-sm font-semibold uppercase tracking-wide text-sky-700">انضم إلى دروس</div>
+        <h1 className="text-3xl font-bold text-slate-900">أنشئ حسابك</h1>
+        <p className="text-sm text-slate-600">اختر دورك للبدء في إنشاء أو حضور الدورات.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/50">
+      <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm text-right">
         <div className="space-y-2">
-          <label className="text-sm text-slate-200" htmlFor="name">
-            Name
+          <label className="text-sm text-slate-700" htmlFor="name">
+            الاسم
           </label>
           <input
             id="name"
             name="name"
             required
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-50 focus:border-indigo-400 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-100 focus:outline-none"
             value={form.name}
             onChange={handleChange}
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm text-slate-200" htmlFor="email">
-            Email
+          <label className="text-sm text-slate-700" htmlFor="email">
+            البريد الإلكتروني
           </label>
           <input
             id="email"
             name="email"
             type="email"
             required
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-50 focus:border-indigo-400 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-100 focus:outline-none"
             value={form.email}
             onChange={handleChange}
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm text-slate-200" htmlFor="role">
-            Role
+          <label className="text-sm text-slate-700" htmlFor="role">
+            الدور
           </label>
           <select
             id="role"
             name="role"
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-50 focus:border-indigo-400 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-100 focus:outline-none"
             value={form.role}
             onChange={handleChange}
           >
@@ -99,45 +99,45 @@ export default function Register() {
           </select>
         </div>
         <div className="space-y-2">
-          <label className="text-sm text-slate-200" htmlFor="password">
-            Password
+          <label className="text-sm text-slate-700" htmlFor="password">
+            كلمة المرور
           </label>
           <input
             id="password"
             name="password"
             type="password"
             required
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-50 focus:border-indigo-400 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-100 focus:outline-none"
             value={form.password}
             onChange={handleChange}
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm text-slate-200" htmlFor="password_confirmation">
-            Confirm Password
+          <label className="text-sm text-slate-700" htmlFor="password_confirmation">
+            تأكيد كلمة المرور
           </label>
           <input
             id="password_confirmation"
             name="password_confirmation"
             type="password"
             required
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-50 focus:border-indigo-400 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-100 focus:outline-none"
             value={form.password_confirmation}
             onChange={handleChange}
           />
         </div>
-        {error && <div className="rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-2 text-sm text-red-200">{error}</div>}
+        {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">حدث خطأ أثناء إنشاء الحساب</div>}
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-900/50 hover:bg-indigo-600 disabled:opacity-60"
+          className="flex w-full items-center justify-center rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-700 disabled:opacity-60"
         >
-          {loading ? 'Creating account...' : 'Create account'}
+          {loading ? 'جاري إنشاء الحساب...' : 'إنشاء الحساب'}
         </button>
-        <div className="text-center text-sm text-slate-300">
-          Already have an account?{' '}
-          <Link to="/login" className="text-indigo-300 hover:text-indigo-200">
-            Sign in
+        <div className="text-center text-sm text-slate-600">
+          لديك حساب بالفعل؟{' '}
+          <Link to="/login" className="text-sky-700 hover:text-sky-600">
+            تسجيل الدخول
           </Link>
         </div>
       </form>

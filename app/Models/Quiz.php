@@ -13,6 +13,7 @@ class Quiz extends Model
 
     protected $fillable = [
         'course_id',
+        'lecture_id',
         'title',
         'description',
         'available_at',
@@ -27,6 +28,11 @@ class Quiz extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function lecture(): BelongsTo
+    {
+        return $this->belongsTo(Lecture::class);
     }
 
     public function questions(): HasMany
