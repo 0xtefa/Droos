@@ -1,11 +1,40 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Droos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title> منصة إجتهد </title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="منصة تعليمية إسلامية متكاملة لتقديم دورات علمية شرعية بطريقة تفاعلية" />
+    <meta name="theme-color" content="#0284c7" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="منصة إجتهد" />
+
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="إجتهد، دروس، تعليم، إسلام، فقه، تفسير، عقيدة، رقائق" />
+    <meta name="author" content="منصة إجتهد" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="منصة إجتهد - تعلم العلم الشرعي" />
+    <meta property="og:description" content="منصة تعليمية إسلامية متكاملة لتقديم دورات علمية شرعية بطريقة تفاعلية" />
+    <meta property="og:image" content="/images/logo.png" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+
+    <!-- Preconnect to API -->
+    <link rel="preconnect" href="http://localhost:8000" crossorigin />
   </head>
-  <body class="bg-slate-950 text-slate-50">
+  <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../auth/AuthProvider';
+import { useToast, ButtonSpinner } from '../components';
 
 export default function Login() {
   const { login } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
+  const toast = useToast();
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -20,10 +22,12 @@ export default function Login() {
     setError(null);
     try {
       await login(form);
+      toast.success('تم تسجيل الدخول بنجاح', 'مرحبًا بك');
       const redirectTo = location.state?.from?.pathname ?? '/dashboard';
       navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
+      toast.error('فشل تسجيل الدخول');
     } finally {
       setLoading(false);
     }
@@ -70,8 +74,9 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-[15px] flex w-full items-center justify-center rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-700 disabled:opacity-60"
+          className="mt-[15px] flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-700 disabled:opacity-60"
         >
+          {loading && <ButtonSpinner className="text-white" />}
           {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
         </button>
         <div className="mt-[15px] text-center text-sm text-slate-600">

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -15,7 +16,8 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     public const ROLE_STUDENT = 'student';
-    public const ROLE_INSTRUCTOR = 'instructor';
+    public const ROLE_MODERATOR = 'moderator';
+    public const ROLE_ADMIN = 'admin';
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +29,7 @@ class User extends Authenticatable
         'email',
         'role',
         'password',
+        'avatar',
     ];
 
     /**
@@ -65,5 +68,55 @@ class User extends Authenticatable
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    /**
+     * الطلاب الذين يتابعهم هذا المتابع
+     */
+    public function assignedStudents(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'moderator_student', 'moderator_id', 'student_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * المتابعون المسؤولون عن هذا الطالب
+     */
+    public function assignedModerators(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'moderator_student', 'student_id', 'moderator_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * التحقق من أن المستخدم هو admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    /**
+     * التحقق من أن المستخدم هو متابع
+     */
+    public function isModerator(): bool
+    {
+        return $this->role === self::ROLE_MODERATOR;
+    }
+
+    /**
+     * التحقق من أن المستخدم هو طالب
+     */
+    public function isStudent(): bool
+    {
+        return $this->role === self::ROLE_STUDENT;
+    }
+
+    /**
+     * التحقق من أن المستخدم له صلاحيات إدارية (admin أو moderator)
+     */
+    public function hasAdminAccess(): bool
+    {
+        return $this->isAdmin() || $this->isModerator();
     }
 }

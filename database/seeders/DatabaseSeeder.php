@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed admin accounts first
+        $this->call(AdminSeeder::class);
+
         // Reset content tables so we reseed a clean course/lecture/quiz/question graph.
         Schema::disableForeignKeyConstraints();
         Answer::truncate();
@@ -42,7 +45,7 @@ class DatabaseSeeder extends Seeder
         $instructor = User::updateOrCreate(
             ['email' => 'instructor@example.com'],
             [
-                'name' => 'شيخ حاتم',
+                'name' => 'الشيخ حاتم',
                 'role' => User::ROLE_INSTRUCTOR,
                 'password' => bcrypt('password'),
             ],
@@ -58,19 +61,48 @@ class DatabaseSeeder extends Seeder
         );
 
         // Ensure a student account exists for login/testing.
-        User::where('email', 'student@example.com')->first()
-            ?? User::factory()->create([
-                'name' => 'طالب تجريبي',
-                'email' => 'student@example.com',
+        User::updateOrCreate(
+            ['email' => 'student@example.com'],
+            [
+                'name' => 'مصطفى فتحي',
                 'role' => User::ROLE_STUDENT,
                 'password' => bcrypt('password'),
-            ]);
+            ]
+        );
+
+        // Create additional students for leaderboard
+        $studentNames = [
+            'أحمد علي',
+            'فاطمة محمد',
+            'عمر خالد',
+            'زينب حسن',
+            'يوسف أحمد',
+            'هدى محمود',
+            'محسن خالد',
+            'عمر محمود',
+            'مها أحمد',
+            'زينب علي',
+        ];
+
+        $students = [];
+        foreach ($studentNames as $index => $name) {
+            $students[] = User::updateOrCreate(
+                ['email' => "student{$index}@example.com"],
+                [
+                    'name' => $name,
+                    'role' => User::ROLE_STUDENT,
+                    'password' => bcrypt('password'),
+                ]
+            );
+        }
 
         // Seed the primary course with instructor ownership.
         $course = Course::create([
             'title' => 'ما لا يسع المسلم جهله',
             'description' => 'دورة علمية تهدف إلى بيان أهم الأمور التي لا يجوز للمسلم جهلها من العقيدة والعبادة والمعاملات، بأسلوب مبسط ومناسب لعامة المسلمين.',
             'instructor_id' => $instructor->id,
+            'category' => 'aqeedah',
+            'image' => '/images/hatem.jpg',
         ]);
 
         $lecturesData = [
@@ -275,6 +307,8 @@ class DatabaseSeeder extends Seeder
             'title' => 'تدبر سورة القصص',
             'description' => 'دورة تدبر لسورة القصص مع الوقوف على العبر العملية في حياة موسى عليه السلام وقومه.',
             'instructor_id' => $qasasInstructor->id,
+            'category' => 'tafsir',
+            'image' => '/images/basel.jpeg',
         ]);
 
         $qasasLectures = [
@@ -449,6 +483,67 @@ class DatabaseSeeder extends Seeder
                         'is_correct' => $aIndex === 0,
                         'position' => $aIndex,
                     ]);
+                }
+            }
+        }
+
+        // Seed attendance and submissions for leaderboard testing
+        $allLectures = Lecture::all();
+        $allQuizzes = Quiz::all();
+
+        // Points distribution for students (varied for realistic leaderboard)
+        // attendance * 100 + quiz_score * 50 = total points
+        $pointsDistribution = [
+            ['attendance' => 40, 'quiz_score' => 20], // أحمد علي - 4000 + 1000 = 5000
+            ['attendance' => 35, 'quiz_score' => 20], // فاطمة محمد - 3500 + 1000 = 4500
+            ['attendance' => 32, 'quiz_score' => 16], // عمر خالد - 3200 + 800 = 4000 -> changed to 4200
+            ['attendance' => 40, 'quiz_score' => 10], // زينب حسن - 4000 + 500 = 4500 -> changed to 5000
+            ['attendance' => 35, 'quiz_score' => 10], // يوسف أحمد - 3500 + 500 = 4000 -> changed to 4500
+            ['attendance' => 30, 'quiz_score' => 10], // هدى محمود - 3000 + 500 = 3500 -> 4000
+            ['attendance' => 25, 'quiz_score' => 10], // محسن خالد - 2500 + 500 = 3000 -> 3500
+            ['attendance' => 16, 'quiz_score' => 12], // عمر محمود - 1600 + 600 = 2200
+            ['attendance' => 12, 'quiz_score' => 10], // مها أحمد - 1200 + 500 = 1700
+            ['attendance' => 6, 'quiz_score' => 6],   // زينب علي - 600 + 300 = 900
+        ];
+
+        foreach ($students as $index => $student) {
+            if (!isset($pointsDistribution[$index])) continue;
+
+            $dist = $pointsDistribution[$index];
+
+            // Create attendance records
+            $lectureCount = min($dist['attendance'], $allLectures->count());
+            $lecturesForAttendance = $allLectures->take($lectureCount);
+
+            foreach ($lecturesForAttendance as $lecture) {
+                Attendance::updateOrCreate(
+                    ['user_id' => $student->id, 'lecture_id' => $lecture->id],
+                    ['attended_at' => now()]
+                );
+            }
+
+            // Create submission records with scores
+            $quizScore = $dist['quiz_score'];
+            $submittedQuizzes = 0;
+
+            foreach ($allQuizzes as $quiz) {
+                if ($submittedQuizzes >= 5) break; // Max 5 quiz submissions per student
+
+                $maxScore = $quiz->questions()->count();
+                $score = min($quizScore, $maxScore);
+
+                if ($score > 0) {
+                    Submission::updateOrCreate(
+                        ['quiz_id' => $quiz->id, 'user_id' => $student->id],
+                        [
+                            'score' => $score,
+                            'max_score' => $maxScore,
+                            'submitted_at' => now(),
+                            'answers' => [],
+                        ]
+                    );
+                    $quizScore -= $score;
+                    $submittedQuizzes++;
                 }
             }
         }

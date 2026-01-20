@@ -59,4 +59,27 @@ class LectureController extends Controller
 
         return response()->json($lecture, 201);
     }
+
+    public function show(Lecture $lecture): JsonResponse
+    {
+        $user = request()->user();
+
+        // Load relationships
+        $lecture->load(['quiz', 'summary', 'course']);
+
+        // Check if completed
+        $lecture->is_completed = $lecture->completions()
+            ->where('user_id', $user->id)
+            ->exists();
+
+        // Check if attended
+        $lecture->is_attended = \App\Models\Attendance::where('lecture_id', $lecture->id)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        return response()->json([
+            'lecture' => $lecture,
+            'course' => $lecture->course,
+        ]);
+    }
 }

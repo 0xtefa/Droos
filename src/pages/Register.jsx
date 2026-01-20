@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../auth/AuthProvider';
+import { useToast, ButtonSpinner } from '../components';
 
 const roles = [
   { value: 'student', label: 'Student' },
@@ -10,6 +11,7 @@ const roles = [
 export default function Register() {
   const { register } = useAuthContext();
   const navigate = useNavigate();
+  const toast = useToast();
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -30,6 +32,7 @@ export default function Register() {
     setError(null);
     try {
       await register(form);
+      toast.success('تم إنشاء الحساب بنجاح', 'مرحبًا بك');
       navigate('/dashboard', { replace: true });
     } catch (err) {
       const validation = err.response?.data?.errors;
@@ -39,6 +42,7 @@ export default function Register() {
       } else {
         setError(err.response?.data?.message || 'Registration failed');
       }
+      toast.error('فشل إنشاء الحساب');
     } finally {
       setLoading(false);
     }
@@ -130,8 +134,9 @@ export default function Register() {
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-700 disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-700 disabled:opacity-60"
         >
+          {loading && <ButtonSpinner className="text-white" />}
           {loading ? 'جاري إنشاء الحساب...' : 'إنشاء الحساب'}
         </button>
         <div className="text-center text-sm text-slate-600">
